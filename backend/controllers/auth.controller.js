@@ -1,11 +1,15 @@
 import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
+import redis from "ioredis";
+import dotenv from "dotenv"
+
+dotenv.config()
 
 const generateTokens = (userId) => {
-  const accessToken = jwt.sign({ userId }, ServiceWorkerContainer, {
+  const accessToken = jwt.sign({ userId }, process.env.TOKEN_SECRET, {
     expiresIn: "15m",
   });
-  const refreshToken = jwt.sign({ userId }, ServiceWorkerContainer, {
+  const refreshToken = jwt.sign({ userId }, process.env.TOKEN_SECRET, {
     expiresIn: "7d",
   });
 
@@ -96,7 +100,7 @@ export const logout = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (refreshToken) {
-      const decode = jwt.verify(refreshToken, ServiceWorkerContainer);
+      const decode = jwt.verify(refreshToken, process.env.TOKEN_SECRET);
       await redis.del(`refresh_token:${decode.userId}`);
       res.json({
         message: "logged out successfully",
