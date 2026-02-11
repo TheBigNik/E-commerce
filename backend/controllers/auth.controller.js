@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import redis from "ioredis";
 import dotenv from "dotenv"
+import { prisma } from "../lib/prisma.js";
 
 dotenv.config()
 
